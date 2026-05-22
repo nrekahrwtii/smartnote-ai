@@ -20,10 +20,15 @@ load_dotenv()
 
 
 # DEEPSEEK API
-client = OpenAI(
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com"
-)
+client = None
+
+api_key = os.getenv("DEEPSEEK_API_KEY")
+
+if api_key:
+    client = OpenAI(
+        api_key=api_key,
+        base_url="https://api.deepseek.com"
+    )
 
 
 @login_required(login_url='/login/')
@@ -190,6 +195,14 @@ def generate_summary(request, id):
     )
 
     try:
+
+        if not client:
+
+            note.summary = "API Key belum disetting."
+
+            note.save()
+
+            return redirect(f'/note/{note.id}/')
 
         response = client.chat.completions.create(
             model="deepseek-chat",
