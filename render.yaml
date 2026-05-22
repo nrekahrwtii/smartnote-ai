@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: smartnote-ai
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn smartnote.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: False
